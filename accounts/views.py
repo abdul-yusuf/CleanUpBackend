@@ -77,11 +77,12 @@ class OTPVerifyView(generics.GenericAPIView):
         otp = request.data.get('pin')
         try:
             otp_obj = models.Otp.objects.get(email=email, pin=otp, expired_at__gte=timezone.now())
-            user = models.User.objects.get(email=email)
+            print(email)
+            user = models.CustomUser.objects.get(email=email)
             user.is_active = True
             otp_obj.delete()
             user.save()
             return Response({'status': 'success', 'message': 'Phone number verified, account activated!'}, status=status.HTTP_200_OK)
 
         except models.Otp.DoesNotExist:
-            return Response({'status': 'success', 'message': 'Invalid OTP code'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'Invalid OTP code', 'status': 'success'}, status=status.HTTP_400_BAD_REQUEST)

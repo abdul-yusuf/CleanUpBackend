@@ -13,8 +13,8 @@ def generate_otp(length=4):
 
 class SMSService:
     def __init__(self):
-        self.username = 'cleanup'
-        self.api_key = 'atsk_88184479258673d4bebe5fa5fa90a061419689fe5aa01558b2c0cb2bc451350bca971678'
+        self.username = 'sandbox'
+        self.api_key = 'atsk_4396aff20f77073773d344d96f7b9feba2fa6bfcdf8f6270535dd81718a883b9420335cf'
         africastalking.initialize(self.username, self.api_key)
         self.sms = africastalking.SMS
 
@@ -22,7 +22,7 @@ class SMSService:
         message = f"Your OTP code is {otp}"
         print(phone_number, message)
         try:
-            response = self.sms.send(message, [phone_number])
+            response = self.sms.send(message, [phone_number], '3235')
             print(response)
             return True
         except Exception as e:

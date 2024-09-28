@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!1m&-*)6)ifc)jh3do_v6zy$!=yjqw#ruu6x51okmp#qd=udu(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cleanupbackend-production.up.railway.app', 'railway.app']
+ALLOWED_HOSTS = ['cleanupbackend-production.up.railway.app', 'railway.app', 'e13b-102-91-92-132.ngrok-free.app', '127.0.0.1']
 
 
 # Application definition
@@ -150,3 +150,9 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+# settings.py
+CSRF_TRUSTED_ORIGINS = [
+    'https://e13b-102-91-92-132.ngrok-free.app'
+]
+
