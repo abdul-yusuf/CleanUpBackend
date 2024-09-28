@@ -44,8 +44,7 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         """Retrive and return authenticated user"""
-
-        return models.User.objects.get(pk=self.request.user.pk)
+        return models.CustomUser.objects.get(pk=self.request.user.pk)
 
 
 class OTPGenerateView(generics.CreateAPIView):

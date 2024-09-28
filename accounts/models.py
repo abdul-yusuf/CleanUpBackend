@@ -1,4 +1,5 @@
 # accounts/models.py
+from datetime import timedelta
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
@@ -42,7 +43,7 @@ class Otp(models.Model):
     email = models.EmailField(unique=True)
     pin = models.CharField(max_length=6, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
-    expired_at = models.DateTimeField()
+    expired_at = models.DateTimeField(default=timezone.now() + timedelta(minutes=5))
 
     def __str__(self):
         return f"OTP for {self.email}"

@@ -1,6 +1,7 @@
 # accounts/serializers.py
 from django.utils.translation import gettext as _
-from datetime import timedelta, timezone
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .utils import SMSService, generate_otp
@@ -8,18 +9,18 @@ from .models import Otp
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password', 'phone_number')
+        fields = ('email', 'full_name', 'password', 'phone_number')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
-            first_name=validated_data.get('first_name', ''),
-            last_name=validated_data.get('last_name', ''),
+            full_name=validated_data.get('full_name', ''),
             phone_number=validated_data.get('phone_number', None),
         )
         
@@ -30,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             sms_service.send_otp(user.phone_number, otp)
 
             # Save OTP to user profile (store in a temporary field or another model)
-            otp_obj = Otp.objects.get_or_create(email=user.email, pin=otp)
+            otp_obj = Otp.objects.get_or_create(email=user.email, pin=otp)[0]
             otp_obj.expired_at = timezone.now() + timedelta(minutes=5)
             otp_obj.save()
         
