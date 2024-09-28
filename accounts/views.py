@@ -1,5 +1,6 @@
 # accounts/views.py
-from datetime import timedelta, timezone
+from datetime import timedelta
+from django.utils import timezone
 from rest_framework import status, authentication, permissions
 from django.contrib.auth import get_user_model
 from rest_framework import generics
@@ -49,19 +50,19 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 class OTPGenerateView(generics.CreateAPIView):
     serializer_class = OTPcreateSerializer
-
     def post(self, request, *args, **kwargs):
 
         user = request.data.get('email')
-        if user and user.phone_number:
+        user_inst = models.CustomUser.objects.get(email=user)
+        if user and user_inst.phone_number:
+            otp_obj = models.Otp.objects.get_or_create(email=user)[0]  # Adjust expiration time as needed 
             otp = generate_otp()  # Replace with your OTP generation logic
-            otp_obj = models.Otp.objects.get_or_create(email=user)[0]  # Adjust expiration time as needed
-
+            
             otp_obj.pin = otp
             otp_obj.expired_at = timezone.now() + timedelta(minutes=5)
             otp_obj.save()
 
-            SMSService(user.phone_number, otp)  # Replace with your OTP sending logic
+            SMSService().send_otp(user_inst.phone_number, otp)  # Replace with your OTP sending logic
             return Response({'detail': 'OTP sent successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'detail': 'Error'}, status=status.HTTP_400_BAD_REQUEST)
